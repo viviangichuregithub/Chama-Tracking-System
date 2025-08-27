@@ -28,7 +28,7 @@ class Member(Base):
     @classmethod
     def create(cls, name: str, phone: str, status=MemberStatus.ACTIVE):
         if len(name.strip()) < 2:
-            raise ValueError("Name must be at least 2 characters long.")
+            raise ValueError("❌ Name must be at least 2 characters long.")
         phone = normalize_phone(phone)
 
         with SessionLocal() as session:
@@ -37,7 +37,7 @@ class Member(Base):
             session.commit()
             session.refresh(member)  # ensures ID is populated
             print(
-                f"😊👌 Member '{name}' created with ID {member.id} | Join Date: {member.join_date}"
+                f"👌 Member '{name}' created with ID {member.id} | Join Date: {member.join_date}"
             )
             return member
 
@@ -50,7 +50,7 @@ class Member(Base):
                 return False
             session.delete(member)
             session.commit()
-            print(f"🗑 Member {member.name} deleted.")
+            print(f"🚮 Member {member.name} deleted.")
             return True
 
     @classmethod
