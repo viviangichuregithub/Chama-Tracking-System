@@ -44,18 +44,18 @@ class Loan(Base):
         }
 
         if plan not in plan_options:
-            raise ValueError("Invalid plan. Choose '1_month', '6_months', or '12_months'.")
+            raise ValueError("❌ Invalid plan. Choose '1_month', '6_months', or '12_months'.")
 
         session = SessionLocal()
         try:
             member = session.get(Member, member_id)
             if not member:
-                raise ValueError("Member not found.")
+                raise ValueError("❌ Member not found.")
 
             # Rule 1: Minimum 2 months membership
             if member.join_date > datetime.now() - timedelta(days=60):
                 raise ValueError(
-                    f"Cannot lend loan. Member must be at least 2 months in the chama "
+                    f"❌ Cannot lend loan. Member must be at least 2 months in the chama "
                     f"(Joined {member.join_date.date()})."
                 )
 
@@ -63,18 +63,18 @@ class Loan(Base):
             active_loans = session.query(cls).filter_by(member_id=member_id, status=LoanStatus.ACTIVE).all()
             if active_loans:
                 raise ValueError(
-                    f"Cannot lend loan. Member has an active loan (ID {active_loans[0].id}). Finish repayment first."
+                    f"❌ Cannot lend loan. Member has an active loan (ID {active_loans[0].id}). Finish repayment first."
                 )
 
             # Rule 3: Loan amount <= 3 * total contributions for this member
             total_contrib_member = Contribution.total_for_member(member_id)
             if amount > 3 * total_contrib_member:
                 raise ValueError(
-                    f"Cannot lend loan. Requested amount {amount:.2f} exceeds 3× member contributions ({3*total_contrib_member:.2f})."
+                    f"❌ Cannot lend loan. Requested amount {amount:.2f} exceeds 3× member contributions ({3*total_contrib_member:.2f})."
                 )
 
             if amount <= 0:
-                raise ValueError("Loan must be greater than 0.")
+                raise ValueError("❌ Loan must be greater than 0.")
 
             # Rule 4: Total loans for all members <= total chama contributions
             all_members = session.query(Member).all()
@@ -87,8 +87,8 @@ class Loan(Base):
 
             if total_outstanding_loans + amount > total_chama_contrib:
                 raise ValueError(
-                    f"Cannot lend loan. Total loans ({total_outstanding_loans + amount:.2f}) "
-                    f"would exceed total chama contributions ({total_chama_contrib:.2f})."
+                    f"❌ Cannot lend loan. Total loans ({total_outstanding_loans + amount:.2f}) "
+                    f"❌ Not possible as it would surpass the total chama contributions ({total_chama_contrib:.2f})."
                 )
 
             # Determine due date and interest
@@ -119,13 +119,13 @@ class Loan(Base):
     def apply_repayment(self, amount: float):
         """Apply repayment and automatically set status."""
         if amount <= 0:
-            raise ValueError("Repayment must be greater than 0.")
+            raise ValueError("❌ Repayment must be greater than 0.")
 
         session = SessionLocal()
         try:
             loan = session.merge(self)
             if amount > loan.balance:
-                raise ValueError("Repayment cannot exceed remaining balance.")
+                raise ValueError("❌ Repayment cannot exceed remaining balance.")
             loan.balance -= amount
 
             loan.balance = round(loan.balance, 2)
