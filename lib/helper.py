@@ -76,3 +76,8 @@ def prompt_date(prompt: str, fmt="%Y-%m-%d") -> datetime:
             return datetime.strptime(val, fmt)
         except ValueError:
             print(f"❌ Invalid date format. Please use {fmt}.")
+
+def print_header(title: str):
+    print("\n" + "=" * 40)
+    print(title)
+    print("=" * 40)
