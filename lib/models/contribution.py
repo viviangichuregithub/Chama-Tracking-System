@@ -19,7 +19,7 @@ class Contribution(Base):
     def create(cls, member_id: int, amount: float):
         """Add to existing contribution today or create new record"""
         if amount <= 0:
-            raise ValueError("Contribution must be greater than 0.")
+            raise ValueError("❌Contribution must be greater than 0.")
 
         session = SessionLocal()
         today = now().date()
@@ -34,13 +34,13 @@ class Contribution(Base):
         if existing:
             existing.amount += amount
             session.commit()
-            print(f"Added {amount} to existing contribution (ID {existing.id}) for Member ID {member_id}. New total: {existing.amount}")
+            print(f"✅ Added {amount} to existing contribution (ID {existing.id}) for Member ID {member_id}. New total: {existing.amount}")
             return existing
         else:
             contribution = cls(member_id=member_id, amount=amount, date=now())
             session.add(contribution)
             session.commit()
-            print(f"Contribution of {amount} recorded for Member ID {member_id} (ID {contribution.id})")
+            print(f"✅ Contribution of {amount} recorded for Member ID {member_id} (ID {contribution.id})")
             return contribution
 
     @classmethod
@@ -52,7 +52,7 @@ class Contribution(Base):
             return False
         session.delete(c)
         session.commit()
-        print(f"🗑 Contribution {contribution_id} deleted.")
+        print(f"🚮 Contribution {contribution_id} deleted.")
         return True
 
     @classmethod
