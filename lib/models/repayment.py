@@ -21,14 +21,14 @@ class Repayment(Base):
     def apply_repayment(cls, loan_id: int, amount: float):
         """Apply repayment to a loan safely"""
         if amount <= 0:
-            raise ValueError("Repayment must be greater than 0.")
+            raise ValueError("❌ Repayment must be greater than 0.")
 
         session = SessionLocal()
         loan = session.get(Loan, loan_id)
         if not loan:
-            raise ValueError("Loan not found.")
+            raise ValueError("❌ Loan not found.")
         if amount > loan.balance:
-            raise ValueError("Repayment cannot exceed loan balance.")
+            raise ValueError("❌ Repayment cannot exceed loan balance.")
 
         # Create repayment record and apply to loan
         repayment = cls(loan_id=loan_id, amount=amount, date=now())
@@ -36,7 +36,7 @@ class Repayment(Base):
 
         session.add(repayment)
         session.commit()
-        print(f"Repayment of {amount} applied to Loan {loan_id}, new balance {loan.balance}")
+        print(f"✅ Repayment of {amount} applied to Loan {loan_id}, new balance {loan.balance}")
         return repayment
 
     @classmethod
