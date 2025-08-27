@@ -1,6 +1,6 @@
-# 💰 CHAMA CLI App 💰
+# 💰 CHAMA TRACKING SYSTEM 💰
 
-**The CHAMA CLI App** is a simple and interactive Command-Line Interface (CLI) project for managing a Kenyan savings group (Chama).
+**The Chama Tracking System** is a simple and interactive Command-Line Interface (CLI) project for managing a Kenyan savings group (Chama).
 It helps track members, contributions, loans, and repayments, while generating useful reports for transparency and accountability.
 This system uses realistic Kenyan data for demonstration and enforces rules that mirror real-world Chama practices.
 
