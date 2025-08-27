@@ -2,7 +2,7 @@ from lib.models.member import Member, MemberStatus
 from lib.models.contribution import Contribution
 from lib.models.loan import Loan, LoanStatus
 from lib.models.repayment import Repayment
-from lib.helper import prompt_int, prompt_choice, prompt_float, confirm_delete
+from lib.helper import prompt_int, prompt_choice, prompt_float, confirm_delete, print_header
 from lib.db.db import init_db, SessionLocal
 from tabulate import tabulate
 from datetime import datetime, timedelta
@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 # ------------------- MAIN MENU -------------------
 def main_menu():
     while True:
-        print("\n=== CHAMA MAIN MENU ===")
+        print_header("💰 CHAMA MAIN MENU 💸")
         print("1. Members")
         print("2. Contributions")
         print("3. Loans")
@@ -29,14 +29,14 @@ def main_menu():
         elif choice == "4":
             reports_menu()
         elif choice == "0":
-            print("👋 Goodbye!")
+            print("👋 Thanks for Visiting My Chama! Goodbye!")
             break
 
 
 # ------------------- MEMBERS MENU -------------------
 def members_menu():
     while True:
-        print("\n--- MEMBERS MENU ---")
+        print_header("===🧑🏽‍🤝‍🧑🏾 MEMBERS MENU ===")
         print("1. Create Member")
         print("2. Delete Member")
         print("3. List All Members")
@@ -48,15 +48,15 @@ def members_menu():
         choice = prompt_choice("Choose: ", ["1", "2", "3", "4", "5", "6", "0"])
 
         if choice == "1":
-            name = input("Enter member name: ")
-            phone = input("Enter phone (07…): ")
+            name = input("Enter Member Full Name: ")
+            phone = input("Enter Phone (07…): ")
             try:
                 Member.create(name, phone)
             except Exception as e:
                 print(f"❌ {e}")
 
         elif choice == "2":
-            member_id = prompt_int("Enter member ID to delete: ")
+            member_id = prompt_int("Enter Member ID to delete: ")
             member = Member.get_by_id(member_id)
             if member and confirm_delete(member.name):
                 Member.delete(member_id)
@@ -64,7 +64,7 @@ def members_menu():
         elif choice == "3":
             members = Member.get_all()
             if not members:
-                print("No members found.")
+                print("❌No Members found.")
             else:
                 table = []
                 for m in members:
@@ -107,12 +107,12 @@ def members_menu():
 # ------------------- CONTRIBUTIONS MENU -------------------
 def contributions_menu():
     while True:
-        print("\n--- CONTRIBUTIONS MENU ---")
+        print_header("=== 🤑 CONTRIBUTIONS MENU ===")
         print("1. Record Contribution")
         print("2. Delete Contribution")
         print("3. List All Contributions")
         print("4. Find Contribution by ID")
-        print("5. View Contribution’s Member")
+        print("5. View Contribution's Member")
         print("6. Show Member Total Contributions")
         print("7. Show All Contributions for a Member")
         print("0. Back to Main")
@@ -165,7 +165,7 @@ def contributions_menu():
         elif choice == "6":
             member_id = prompt_int("Enter Member ID: ")
             total = Contribution.total_for_member(member_id)
-            print(f"💰 Total contributions for Member {member_id}: {total}")
+            print(f"Total contributions for Member {member_id}: {total}")
 
         elif choice == "7":
             member_id = prompt_int("Enter Member ID: ")
@@ -183,14 +183,14 @@ def contributions_menu():
 # ------------------- LOANS MENU -------------------
 def loans_menu():
     while True:
-        print("\n--- LOANS MENU ---")
+        print_header("=== 💵 LOANS MENU ===")
         print("1. Issue Loan")
         print("2. Record Loan Repayment")
         print("3. Delete Loan")
         print("4. List All Loans")
         print("5. Find Loan by ID")
         print("6. Find Loans by Status")
-        print("7. View Loan’s Member")
+        print("7. View Loan's Member")
         print("0. Back to Main")
 
         choice = prompt_choice("Choose: ", ["1","2","3","4","5","6","7","0"])
@@ -233,7 +233,7 @@ def loans_menu():
                 session.delete(session.merge(loan))
                 session.commit()
                 session.close()
-                print(f"🗑 Loan {loan_id} deleted.")
+                print(f"🚮 Loan {loan_id} deleted.")
 
         elif choice == "4":  # List All Loans
             loans = Loan.get_all()
@@ -279,7 +279,7 @@ def loans_menu():
 # ------------------- REPORTS MENU -------------------
 def reports_menu():
     while True:
-        print("\n--- REPORTS MENU ---")
+        print_header("=== 📊 REPORTS MENU ===")
         print("1. Member Statement")
         print("2. Group Totals")
         print("3. Members in Arrears")
@@ -308,7 +308,7 @@ def reports_menu():
                 total_contrib = sum(c.amount for c in contributions)
                 print(f"Total Contributions: {total_contrib:.2f}")
             else:
-                print("No contributions found.")
+                print("❌ No contributions found.")
 
             # Loans
             loans = Loan.for_member(member_id)
@@ -321,7 +321,7 @@ def reports_menu():
                 print(f"Total Loans: {total_loans_member:.2f}")
                 print(f"Total Outstanding Balance: {total_outstanding_member:.2f}")
             else:
-                print("No loans found.")
+                print("❌ No loans found.")
 
         elif choice == "2":  # Group Totals
             members = Member.get_all()
@@ -333,7 +333,7 @@ def reports_menu():
                 total_loans += sum(l.amount for l in loans)
                 total_outstanding += sum(l.balance for l in loans if l.status in [LoanStatus.ACTIVE, LoanStatus.DEFAULTED])
 
-            print("\nGroup Totals:")
+            print_header("--- Group Totals ---")
             print(f"Total Members: {len(members)}")
             print(f"Total Contributions: {total_contributions:.2f}")
             print(f"Total Loans Issued: {total_loans:.2f}")
@@ -351,7 +351,7 @@ def reports_menu():
                 print("\nMembers in Arrears:")
                 print(tabulate(arrears_list, headers=["Member ID","Name","Phone","Outstanding","Due Date"], tablefmt="grid"))
             else:
-                print("No members in arrears.")
+                print("❌ No members in arrears.")
 
 # ------------------- ENTRY POINT -------------------
 if __name__ == "__main__":
