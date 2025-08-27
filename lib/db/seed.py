@@ -2,7 +2,6 @@
 from faker import Faker
 import random
 from datetime import timedelta, datetime
-
 from lib.db.db import init_db, SessionLocal
 from lib.models.member import Member, MemberStatus
 from lib.models.contribution import Contribution
@@ -28,7 +27,15 @@ def seed_members(n=30):
         phone = normalize_phone(phone)
         status = random.choice(list(MemberStatus))
 
-        member = Member(name=name, phone=phone, status=status)
+        # Random join date within the past 2 years
+        join_date = fake.date_time_between(start_date="-2y", end_date="now")
+
+        member = Member(
+            name=name,
+            phone=phone,
+            status=status,
+            join_date=join_date
+        )
         session.add(member)
         session.flush()  # ensure member.id is generated
         members.append(member)
@@ -48,7 +55,12 @@ def seed_contributions(members, n=50):
     for _ in range(n):
         member = random.choice(members)
         amount = round(random.uniform(100, 5000), 2)
-        date = fake.date_time_this_year()
+
+        # Contribution date must be AFTER member joined
+        date = fake.date_time_between(
+            start_date=member.join_date,
+            end_date="now"
+        )
 
         contribution = Contribution(member_id=member.id, amount=amount, date=date)
         session.add(contribution)
@@ -69,7 +81,7 @@ def seed_loans(members, n=15):
     total_chama_contributions = sum(Contribution.total_for_member(m.id) for m in members)
 
     attempts = 0
-    while len(loans) < n and attempts < n*5:
+    while len(loans) < n and attempts < n * 5:
         attempts += 1
         member = random.choice(members)
         member_contrib = Contribution.total_for_member(member.id)
@@ -78,7 +90,10 @@ def seed_loans(members, n=15):
             continue  # skip members without contributions
 
         # Skip members who already have an active/defaulted loan
-        existing_loans = [l for l in Loan.for_member(member.id) if l.status in [LoanStatus.ACTIVE, LoanStatus.DEFAULTED]]
+        existing_loans = [
+            l for l in Loan.for_member(member.id)
+            if l.status in [LoanStatus.ACTIVE, LoanStatus.DEFAULTED]
+        ]
         if existing_loans:
             continue
 
@@ -88,12 +103,18 @@ def seed_loans(members, n=15):
             l.balance for m2 in members for l in Loan.for_member(m2.id)
             if l.status in [LoanStatus.ACTIVE, LoanStatus.DEFAULTED]
         )
-        max_allowed = min(max_member_loan, 0.5 * total_chama_contributions - current_total_loans)
+        max_allowed = min(
+            max_member_loan,
+            0.5 * total_chama_contributions - current_total_loans
+        )
         if max_allowed <= 0:
             continue
 
         amount = round(random.uniform(100, max_allowed), 2)
-        issued_date = fake.date_time_this_year()
+        issued_date = fake.date_time_between(
+            start_date=member.join_date,
+            end_date="now"
+        )
         plan_choice = random.choice([30, 180, 365])
         due_date = issued_date + timedelta(days=plan_choice)
         interest_rate = {30: 2.0, 180: 4.0, 365: 7.0}[plan_choice]
@@ -131,7 +152,10 @@ def seed_repayments(loans, n=15):
             continue  # skip fully repaid loans
 
         amount = round(random.uniform(100, float(loan.balance)), 2)
-        date = fake.date_time_between(start_date=loan.issued_date, end_date=datetime.now())
+        date = fake.date_time_between(
+            start_date=loan.issued_date,
+            end_date="now"
+        )
 
         repayment = Repayment(loan_id=loan.id, amount=amount, date=date)
         session.add(repayment)
