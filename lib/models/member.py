@@ -37,7 +37,7 @@ class Member(Base):
             session.commit()
             session.refresh(member)  # ensures ID is populated
             print(
-                f"👌 Member '{name}' created with ID {member.id} | Join Date: {member.join_date}"
+                f"✅ Member '{name}' created with ID {member.id} | Join Date: {member.join_date}"
             )
             return member
 

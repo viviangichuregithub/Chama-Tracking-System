@@ -6,19 +6,17 @@ from lib.helper import prompt_int, prompt_choice, prompt_float, confirm_delete, 
 from lib.db.db import init_db, SessionLocal
 from tabulate import tabulate
 from datetime import datetime, timedelta
-
-
 # ------------------- MAIN MENU -------------------
 def main_menu():
     while True:
-        print_header("💰 CHAMA MAIN MENU 💸")
+        print_header("💰 CHAMA TRACKING SYSTEM 💸")
         print("1. Members")
         print("2. Contributions")
         print("3. Loans")
         print("4. Reports")
         print("0. Exit")
 
-        choice = prompt_choice("Select option: ", ["1", "2", "3", "4", "0"])
+        choice = prompt_choice("Choose: ", ["1", "2", "3", "4", "0"])
 
         if choice == "1":
             members_menu()
@@ -29,7 +27,7 @@ def main_menu():
         elif choice == "4":
             reports_menu()
         elif choice == "0":
-            print("👋 Thanks for Visiting My Chama! Goodbye!")
+            print("👋 Thanks for Visiting My Chama!")
             break
 
 
@@ -107,7 +105,7 @@ def members_menu():
 # ------------------- CONTRIBUTIONS MENU -------------------
 def contributions_menu():
     while True:
-        print_header("=== 🤑 CONTRIBUTIONS MENU ===")
+        print_header("=== 🤑 CONTRIBUTIONS ===")
         print("1. Record Contribution")
         print("2. Delete Contribution")
         print("3. List All Contributions")
@@ -183,7 +181,7 @@ def contributions_menu():
 # ------------------- LOANS MENU -------------------
 def loans_menu():
     while True:
-        print_header("=== 💵 LOANS MENU ===")
+        print_header("=== 💵 LOANS ===")
         print("1. Issue Loan")
         print("2. Record Loan Repayment")
         print("3. Delete Loan")
@@ -279,7 +277,7 @@ def loans_menu():
 # ------------------- REPORTS MENU -------------------
 def reports_menu():
     while True:
-        print_header("=== 📊 REPORTS MENU ===")
+        print_header("=== 📊 REPORTS ===")
         print("1. Member Statement")
         print("2. Group Totals")
         print("3. Members in Arrears")
