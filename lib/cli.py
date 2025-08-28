@@ -6,7 +6,7 @@ from lib.helper import prompt_int, prompt_choice, prompt_float, confirm_delete, 
 from lib.db.db import init_db, SessionLocal
 from tabulate import tabulate
 from datetime import datetime, timedelta
-# ------------------- MAIN MENU -------------------
+# MAIN MENU 
 def main_menu():
     while True:
         print_header("💰 CHAMA TRACKING SYSTEM 💸")
@@ -31,7 +31,7 @@ def main_menu():
             break
 
 
-# ------------------- MEMBERS MENU -------------------
+# MEMBERS MENU
 def members_menu():
     while True:
         print_header("===🧑🏽‍🤝‍🧑🏾 MEMBERS MENU ===")
@@ -102,7 +102,7 @@ def members_menu():
             break
 
 
-# ------------------- CONTRIBUTIONS MENU -------------------
+# CONTRIBUTIONS MENU
 def contributions_menu():
     while True:
         print_header("=== 🤑 CONTRIBUTIONS ===")
@@ -178,7 +178,7 @@ def contributions_menu():
                 headers = ["ID", "Amount", "Date"]
                 print(tabulate(table, headers=headers, tablefmt="grid"))
 
-# ------------------- LOANS MENU -------------------
+# LOANS MENU
 def loans_menu():
     while True:
         print_header("=== 💵 LOANS ===")
@@ -274,7 +274,7 @@ def loans_menu():
                     print("❌ Member not found.")
             else:
                 print("❌ Loan not found.")
-# ------------------- REPORTS MENU -------------------
+# REPORTS MENU
 def reports_menu():
     while True:
         print_header("=== 📊 REPORTS ===")
@@ -351,7 +351,7 @@ def reports_menu():
             else:
                 print("❌ No members in arrears.")
 
-# ------------------- ENTRY POINT -------------------
+# ENTRY POINT
 if __name__ == "__main__":
     init_db()
     main_menu()
