@@ -6,7 +6,6 @@ import enum
 from lib.db.db import Base, SessionLocal
 from lib.helper import normalize_phone
 
-# Function to get current datetime without microseconds
 def now():
     return datetime.now().replace(microsecond=0)
 
@@ -21,10 +20,10 @@ class Member(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     phone = Column(String, unique=True, nullable=False)
-    join_date = Column(DateTime, default=now)  # clean timestamp
+    join_date = Column(DateTime, default=now)  
     status = Column(Enum(MemberStatus), default=MemberStatus.ACTIVE)
 
-    # --- Methods ---
+    # Methods
     @classmethod
     def create(cls, name: str, phone: str, status=MemberStatus.ACTIVE):
         if len(name.strip()) < 2:
@@ -82,6 +81,6 @@ class Member(Base):
         with SessionLocal() as session:
             return session.query(cls).filter_by(status=MemberStatus.ACTIVE).all()
 
-    # --- Debug helper ---
+    # Debug helper
     def __repr__(self):
         return f"<Member id={self.id}, name='{self.name}', phone='{self.phone}', status={self.status.value}, join_date={self.join_date}>"

@@ -16,7 +16,7 @@ class Repayment(Base):
     amount = Column(Float, nullable=False)
     date = Column(DateTime, default=now)
 
-    # --- Methods ---
+    # Methods
     @classmethod
     def apply_repayment(cls, loan_id: int, amount: float):
         """Apply repayment to a loan safely"""
@@ -54,6 +54,6 @@ class Repayment(Base):
         session = SessionLocal()
         return session.query(cls).filter_by(loan_id=loan_id).all()
 
-    # --- Debug helper ---
+    # Debug helper
     def __repr__(self):
         return f"<Repayment id={self.id}, loan_id={self.loan_id}, amount={self.amount}, date={self.date}>"

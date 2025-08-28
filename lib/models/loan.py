@@ -11,9 +11,9 @@ def now():
     return datetime.now().replace(microsecond=0)
 
 class LoanStatus(enum.Enum):
-    ACTIVE = "ACTIVE"       # Currently paying
-    PAID = "PAID"           # Fully repaid
-    DEFAULTED = "DEFAULTED" # Missed deadline with remaining balance
+    ACTIVE = "ACTIVE"       
+    PAID = "PAID"           
+    DEFAULTED = "DEFAULTED" 
 
 class Loan(Base):
     __tablename__ = "loans"
@@ -27,7 +27,7 @@ class Loan(Base):
     status = Column(Enum(LoanStatus), default=LoanStatus.ACTIVE)
     balance = Column(Float, nullable=False)
 
-    # ---------------- Methods ----------------
+    # Methods 
     @classmethod
     def issue_loan(cls, member_id: int, amount: float, plan: str):
         """
@@ -70,7 +70,7 @@ class Loan(Base):
             total_contrib_member = Contribution.total_for_member(member_id)
             if amount > 3 * total_contrib_member:
                 raise ValueError(
-                    f"❌ Cannot lend loan. Requested amount {amount:.2f} exceeds 3× member contributions ({3*total_contrib_member:.2f})."
+                    f"❌ Cannot lend loan. Requested amount {amount:.2f} exceeds 3x member contributions ({3*total_contrib_member:.2f})."
                 )
 
             if amount <= 0:
@@ -143,7 +143,7 @@ class Loan(Base):
         finally:
             session.close()
 
-    # ---------------- Class Methods ----------------
+    # Class Methods
     @classmethod
     def get_all(cls):
         session = SessionLocal()
