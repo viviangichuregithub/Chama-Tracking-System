@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, ForeignKey, Numeric, DateTime
 from datetime import datetime
 from lib.db.db import Base, SessionLocal
 
-# Function to get current datetime without microseconds
 def now():
     return datetime.now().replace(microsecond=0)
 
@@ -12,9 +11,9 @@ class Contribution(Base):
     id = Column(Integer, primary_key=True)
     member_id = Column(Integer, ForeignKey("members.id"), nullable=False)
     amount = Column(Numeric(10, 2), nullable=False)
-    date = Column(DateTime, default=now)  # clean timestamp
+    date = Column(DateTime, default=now)  
 
-    # --- Methods ---
+    # Methods
     @classmethod
     def create(cls, member_id: int, amount: float):
         """Add to existing contribution today or create new record"""
